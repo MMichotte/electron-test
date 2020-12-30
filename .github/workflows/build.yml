@@ -25,6 +25,7 @@ jobs:
 
       - name: build electron app
         run: |
+          npm install electron-forge
           npm run publish 
 
       - name: clean files 
