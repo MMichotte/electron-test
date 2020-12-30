@@ -2,8 +2,9 @@ name: Build/release
 
 on: 
   push:
-    tags:
-      - 'v*'
+    branches: [ main ]
+    #tags:
+    #  - 'v*'
 
 jobs:
   release:
