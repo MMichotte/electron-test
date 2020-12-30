@@ -1,0 +1,38 @@
+name: Build/release
+
+on: 
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.15.1
+
+      - name: build electron app
+        run: |
+          npm run publish 
+
+      - name: clean files 
+        run: |
+          mv ./**/*.zip ./
+          find . ! -name "*.zip" -exec rm -r {} \;
+      
+      - name: Create Release
+        id: 123
+        uses: zendesk/action-create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
