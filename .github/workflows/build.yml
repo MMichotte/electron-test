@@ -1,10 +1,6 @@
 name: Build/release
 
-on: 
-  push:
-    branches: [ main ]
-    #tags:
-    #  - 'v*'
+on: push
 
 jobs:
   release:
@@ -18,23 +14,16 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
-      - name: Setup node
+      - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 14.15.1
+          node-version: 10
 
-      - name: build electron app
-        run: |
-          npm install electron-forge
-          npm run publish 
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
 
-      - name: clean files 
-        run: |
-          mv ./**/*.zip ./
-          find . ! -name "*.zip" -exec rm -r {} \;
-      
-      - name: Create Release
-        id: 'id-123'
-        uses: zendesk/action-create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # If the commit is tagged with a version (e.g. "v1.0.0"),
+          # release the app after building
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
