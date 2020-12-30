@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <title>Hello World!</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script defer src="render.js"></script>
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <div class="center">
+      <h1 class="title is-1">🎯 Simple counter</h1>
+      <p id="counter" class="is-large">0</p>
+      <button id="add" class="button is-success is-rounded">Add</button>
+    </div>
   </body>
 </html>
