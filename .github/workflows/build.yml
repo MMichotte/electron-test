@@ -33,7 +33,7 @@ jobs:
           find . ! -name "*.zip" -exec rm -r {} \;
       
       - name: Create Release
-        id: '123'
+        id: 'id-123'
         uses: zendesk/action-create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
