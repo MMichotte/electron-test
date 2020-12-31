@@ -23,20 +23,10 @@ jobs:
           draft: true
           prerelease: false
   
-  build-release:
-    name: Cross-platform build and release
+  release-linux:
+    name: build & release on Linux
     needs: once
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-10.15, windows-2019, ubuntu-16.04]
-        include:
-            - os: windows-2019
-              asset_name: windows.zip
-            - os: ubuntu-16.04
-              asset_name: linux.zip
-            - os: macos-10.15
-              asset_name: darwin.zip
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -53,14 +43,9 @@ jobs:
         
       - name: Build project
         run: |
-          npm run publish:native
+          npm run publish:linux
           cd ./out
-          if [ "$RUNNER_OS" == "windows" ]; then
-              tar -c -f ${{ matrix.asset_name }} .
-          else
-              for dir in *; do zip ${{ matrix.asset_name }} -r $dir; done
-          fi
-        shell: bash
+          for dir in *; do zip linux.zip -r $dir; done
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -69,6 +54,42 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.once.outputs.upload_url }}
-          asset_path: ./out/${{ matrix.asset_name }}
-          asset_name: electron-test-${{ matrix.os }}
+          asset_path: ./out/linux.zip
+          asset_name: electron-test-linux
           asset_content_type: application/zip
+
+  release-osx:
+    name: build & release on OS-X
+    needs: once
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Electron-packager
+        run: |
+          npm install electron-packager --save-dev  
+        
+      - name: Build project
+        run: |
+          npm run publish:osx
+          cd ./out
+          for dir in *; do zip darwin.zip -r $dir; done
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.once.outputs.upload_url }}
+          asset_path: ./out/darwin.zip
+          asset_name: electron-test-darwin
+          asset_content_type: application/zip
+          
