@@ -50,7 +50,7 @@ jobs:
           asset_content_type: application/zip
   
   release-win32:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -66,9 +66,9 @@ jobs:
 
       - name: Build project
         run: |
-          npm run publish:win
+          npm run publish:win:native
           cd ./out
-          zip win32.zip -r . 
+          zip win.zip -r . 
 
       - name: Create Release
         id: create_release
@@ -88,8 +88,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./out/win32.zip
-          asset_name: win32.zip
+          asset_path: ./out/win.zip
+          asset_name: win.zip
           asset_content_type: application/zip
   
   release-linux:
