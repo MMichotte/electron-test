@@ -6,12 +6,10 @@
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "publish:osx": "./node_modules/electron-packager/bin/electron-packager.js . --platform=darwin --out=./out",
+    "publish:win": "./node_modules/electron-packager/bin/electron-packager.js . --platform=win32 --out=./out",
+    "publish:linux": "./node_modules/electron-packager/bin/electron-packager.js . --platform=linux --out=./out"
   },
   "keywords": [],
   "author": {
@@ -56,9 +54,6 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "electron": "11.1.1",
-    "electron-builder": "^22.9.1"
-  },
-  "build": {
-    "appId": "test.id"
+    "electron-packager": "^15.2.0"
   }
 }
