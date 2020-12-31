@@ -92,4 +92,39 @@ jobs:
           asset_path: ./out/darwin.zip
           asset_name: electron-test-darwin
           asset_content_type: application/zip
-          
+  
+  release-win:
+    name: build & release on Windows
+    needs: once
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Electron-packager & wine
+        run: |
+          npm install electron-packager --save-dev 
+          sudo apt install wine64 
+        
+      - name: Build project
+        run: |
+          npm run publish:win
+          cd ./out
+          for dir in *; do zip win64.zip -r $dir; done
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.once.outputs.upload_url }}
+          asset_path: ./out/win64.zip
+          asset_name: electron-test-win64
+          asset_content_type: application/zip
