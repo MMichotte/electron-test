@@ -110,7 +110,7 @@ jobs:
       - name: Install Electron-packager & wine
         run: |
           npm install electron-packager --save-dev 
-          sudo apt install wine64 
+        #sudo apt install wine64 
         
       - name: Build project
         run: |
