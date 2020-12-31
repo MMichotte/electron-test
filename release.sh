@@ -91,7 +91,7 @@ if [ "$PACKAGE_JSON" = true ]
 then
     NEW_V_NUM=$(echo $NEW_VERSION | tr -d "v")
     VER_LINE=$(awk '/"version":/{ print NR; exit }' ./package.json)
-    sed -i '' "${VER_LINE}s/.*/    \"version\": \"${NEW_V_NUM}\",/" package.json
+    sed -i '' "${VER_LINE}s/.*/  \"version\": \"${NEW_V_NUM}\",/" package.json
 fi
 
 git commit -am "${NEW_VERSION}"
