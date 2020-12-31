@@ -6,28 +6,13 @@ on:
 name: Upload Release Asset
 
 jobs:
-  release-OSX:
+  once:
+    name: Create GitHub release
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Install Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install Electron-packager
-        run: |
-          npm install electron-packager --save-dev   
-
-      - name: Build project
-        run: |
-          npm run publish:osx
-          cd ./out
-          zip darwin.zip -r . 
-
-      - name: Create Release
+      - name: Create a release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -37,24 +22,19 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: true
           prerelease: false
-
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./out/darwin.zip
-          asset_name: darwin.zip
-          asset_content_type: application/zip
   
-  release-win32:
-    runs-on: windows-latest
+  build-release:
+    name: Create cross-platform release build, tag and upload binaries
+    needs: once
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
       - name: Install Node
         uses: actions/setup-node@v2
         with:
@@ -62,75 +42,21 @@ jobs:
 
       - name: Install Electron-packager
         run: |
-          npm install electron-packager --save-dev   
-
-      - name: Build project
-        run: |
-          npm run publish:win:native
-          cd ./out
-          zip win.zip -r . 
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: false
-
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./out/win.zip
-          asset_name: win.zip
-          asset_content_type: application/zip
-  
-  release-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+          npm install electron-packager --save-dev  
       
-      - name: Install Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install Electron-packager
-        run: |
-          npm install electron-packager --save-dev   
-
       - name: Build project
         run: |
-          npm run publish:linux
+          npm run publish:native
           cd ./out
-          zip linux.zip -r . 
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: false
+          for dir in *; do zip ${dir}.zip -r $dir; done
 
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./out/linux.zip
-          asset_name: linux.zip
+          upload_url: ${{ needs.once.outputs.upload_url }}
+          asset_path: ./out
+          asset_name: electron-test-${{ matrix.os }}
           asset_content_type: application/zip
