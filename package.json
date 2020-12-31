@@ -8,9 +8,9 @@
     "start": "electron-forge start",
     "lint": "echo \"No linting configured\"",
     "publish:native": "./node_modules/electron-packager/bin/electron-packager.js ./ --out=./out --overwrite",
-    "publish:osx": "./node_modules/electron-packager/bin/electron-packager.js . --platform=darwin --out=./out",
-    "publish:win": "./node_modules/electron-packager/bin/electron-packager.js . --platform=win32 --out=./out",
-    "publish:linux": "./node_modules/electron-packager/bin/electron-packager.js . --platform=linux --out=./out"
+    "publish:osx": "./node_modules/electron-packager/bin/electron-packager.js . --platform=darwin --app-version=$npm_package_version --out=./out",
+    "publish:win": "./node_modules/electron-packager/bin/electron-packager.js . --platform=win32 --app-version=%npm_package_version% --out=./out",
+    "publish:linux": "./node_modules/electron-packager/bin/electron-packager.js . --platform=linux --app-version=$npm_package_version --out=./out"
   },
   "keywords": [],
   "author": {
