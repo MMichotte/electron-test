@@ -60,6 +60,7 @@ jobs:
           else
               for dir in *; do zip ${{ matrix.asset_name }} -r $dir; done
           fi
+        shell: bash
 
       - name: Upload Release Asset
         id: upload-release-asset
