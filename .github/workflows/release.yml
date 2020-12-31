@@ -66,7 +66,7 @@ jobs:
 
       - name: Build project
         run: |
-          npm run publish:win32
+          npm run publish:win
           cd ./out
           zip win32.zip -r . 
 
@@ -90,4 +90,47 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./out/win32.zip
           asset_name: ./out/win32.zip
+          asset_content_type: application/zip
+  
+  release-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Electron-packager
+        run: |
+          npm install electron-packager --save-dev   
+
+      - name: Build project
+        run: |
+          npm run publish:linux
+          cd ./out
+          zip linux.zip -r . 
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./out/linux.zip
+          asset_name: ./out/linux.zip
           asset_content_type: application/zip
