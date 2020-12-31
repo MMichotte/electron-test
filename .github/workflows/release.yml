@@ -49,7 +49,7 @@ jobs:
           npm run publish:native
           cd ./out
           for dir in *; do zip ${dir}.zip -r $dir; done
-          for f in *.zip; do export ASSET="$f"; done
+          for f in *.zip; do echo "ASSET=$f" >> $GITHUB_ENV ; done
 
       - name: Upload Release Asset
         id: upload-release-asset
