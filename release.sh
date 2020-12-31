@@ -94,5 +94,5 @@ then
 fi
 
 git commit -am "${NEW_VERSION}"
-git tag $NEW_VERSION
+git tag -d $NEW_VERSION && git tag $NEW_VERSION || git tag $NEW_VERSION
 git push && git push --tags
