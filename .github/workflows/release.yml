@@ -46,7 +46,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./out/darwin.zip
-          asset_name: ./out/darwin.zip
+          asset_name: darwin.zip
           asset_content_type: application/zip
   
   release-win32:
@@ -89,7 +89,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./out/win32.zip
-          asset_name: ./out/win32.zip
+          asset_name: win32.zip
           asset_content_type: application/zip
   
   release-linux:
@@ -132,5 +132,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./out/linux.zip
-          asset_name: ./out/linux.zip
+          asset_name: linux.zip
           asset_content_type: application/zip
