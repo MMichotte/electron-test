@@ -96,7 +96,7 @@ jobs:
   release-win:
     name: build & release on Windows
     needs: once
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -116,7 +116,8 @@ jobs:
         run: |
           npm run publish:win
           cd ./out
-          for dir in *; do zip win64.zip -r $dir; done
+          tar -c -f win64.zip .
+        shell: bash
 
       - name: Upload Release Asset
         id: upload-release-asset
