@@ -1,7 +1,7 @@
 {
   "name": "electron-test",
   "productName": "electron-test",
-    "version": "v1.0.7",
+    "version": "1.0.7",
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
