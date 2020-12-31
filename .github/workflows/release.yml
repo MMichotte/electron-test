@@ -129,3 +129,4 @@ jobs:
           asset_path: ./out/win64.zip
           asset_name: electron-test-win64
           asset_content_type: application/zip
+        
